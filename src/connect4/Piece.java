@@ -10,7 +10,7 @@ package connect4;
  * @author Robbie
  */
 public class Piece {
-    Player owner;
+    private Player owner;
     
     //Owners are either 1 or 2 for player one or two
     public Piece (Player owner) {

@@ -10,8 +10,8 @@ package connect4;
  * @author Robbie
  */
 public class Slot {
-    int filled;
-    int size;
+    private int filled;
+    private int size;
     
     public Slot(int size) {
         this.size = size;
@@ -29,5 +29,10 @@ public class Slot {
     
     public int getFilled () {
         return filled;
+    }
+    
+    //This is for testing only
+    public void removePiece (){
+        filled--;
     }
 }

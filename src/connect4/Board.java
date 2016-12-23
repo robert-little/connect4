@@ -24,26 +24,34 @@ package connect4;
  * With 0,0 being at the bottom left.
  */
 public class Board {
-    int height; //y
-    int width; //x
+    private int height; //y
+    private int width; //x
     
-    Slot[] slots;
-    Space[][] spaces; //x, y
+    private int winCondtion;
     
-    boolean empty = false;
+    private Slot[] slots;
+    private Space[][] spaces; //x, y
     
-    public Board (int width, int height) {
+    private boolean empty = false;
+    
+    public Board (int width, int height, int winCondtion) {
+        this.winCondtion = winCondtion;
+        this.width = width;
+        this.height = height;
         slots = new Slot[width];
         spaces = new Space[width][height];
         for(int i=0; i < width; i++) {
             slots[i] = new Slot(height);
             for(int j=0; j < height; j++){
-                spaces[i][j] = new Space(empty);
+                spaces[i][j] = new Space();
             }
         }
     }
     
     public boolean placePiece (int x, Player owner) {
+        if(x > width-1){
+            return false;
+        }
         //getting the number of pieces already in the slot so placement is easy
         int firstOpenSpace = slots[x].getFilled();
         
@@ -57,7 +65,7 @@ public class Board {
         return false;
     }
     
-    public Piece getspace(int x, int y){
+    public Piece getSpace(int x, int y){
         return spaces[x][y].getPiece();
     }
     
@@ -66,7 +74,7 @@ public class Board {
         int lastPieceY = slots[lastPieceX].getFilled()-1;
         
         if(owner.getPlayedPieces() > 3){
-            if(slots[lastPieceX].getFilled() >= 4){
+            if(slots[lastPieceX].getFilled() >= winCondtion){
                 if(checkDown(lastPieceX, lastPieceY, owner)){
                     return true;
                 }
@@ -78,13 +86,12 @@ public class Board {
             } else if(checkRightToLeft(lastPieceX, lastPieceY, owner)){
                 return true;
             }
-            
-            
         }
-        
         return false;
     }
     
+    
+    //Checking different win conditions for the next 4 methods
     private boolean checkDown (int x, int y, Player owner){
         int currentY = y-1;
         int count = 1;
@@ -93,7 +100,7 @@ public class Board {
         while(currentY >= 0 && spaces[x][currentY].getPiece().getOwner() == owner){
             count++;
 
-            if(count == 4){
+            if(count == winCondtion){
                 return true;
             }
             currentY--;
@@ -110,7 +117,7 @@ public class Board {
         while(currentXLeft >= 0 && spaces[currentXLeft][y].getPiece() != null){
             if(spaces[currentXLeft][y].getPiece().getOwner() == owner){
                 count++;
-                if(count == 4){
+                if(count == winCondtion){
                     return true;
                 }
                 currentXLeft--;
@@ -119,10 +126,10 @@ public class Board {
             }
         }
         //Looking at the right side of the current piece 
-        while(currentXRight <= 7 && spaces[currentXRight][y].getPiece() != null){
+        while(currentXRight < width && spaces[currentXRight][y].getPiece() != null){
             if(spaces[currentXRight][y].getPiece().getOwner() == owner){
                 count++;
-                if(count == 4){
+                if(count == winCondtion){
                     return true;
                 }
                 currentXRight++;
@@ -140,10 +147,10 @@ public class Board {
         int currentX = x+1;
         int count = 1;
         //First we go up
-        while(currentY <= 7 && currentX <= 7 && spaces[currentX][currentY].getPiece() != null){
+        while(currentY < height && currentX < width && spaces[currentX][currentY].getPiece() != null){
             if(spaces[currentX][currentY].getPiece().getOwner() == owner){
                 count++;
-                if(count == 4){
+                if(count == winCondtion){
                     return true;
                 }
                 currentY++;
@@ -158,7 +165,7 @@ public class Board {
         while(currentY >= 0 && currentX >= 0 &&spaces[currentX][currentY].getPiece() != null){
             if(spaces[currentX][currentY].getPiece().getOwner() == owner){
                 count++;
-                if(count == 4){
+                if(count == winCondtion){
                     return true;
                 }
                 currentY--;
@@ -176,10 +183,10 @@ public class Board {
         int currentX = x-1;
         int count = 1;
         //First we go up
-        while(currentY <= 7 && currentX >= 0 && spaces[currentX][currentY].getPiece() != null){
+        while(currentY < height && currentX >= 0 && spaces[currentX][currentY].getPiece() != null){
             if(spaces[currentX][currentY].getPiece().getOwner() == owner){
                 count++;
-                if(count == 4){
+                if(count == winCondtion){
                     return true;
                 }
                 currentY++;
@@ -191,10 +198,10 @@ public class Board {
         currentY = y-1;
         currentX = x+1;
         //We then go down
-        while(currentY >= 0 && currentX <= 7 && spaces[currentX][currentY].getPiece() != null){
+        while(currentY >= 0 && currentX < width && spaces[currentX][currentY].getPiece() != null){
             if(spaces[currentX][currentY].getPiece().getOwner() == owner){
                 count++;
-                if(count == 4){
+                if(count == winCondtion){
                     return true;
                 }
                 currentY--;
@@ -205,5 +212,12 @@ public class Board {
         }
         
         return false;
+    }
+    
+    //This method only exists for testing purposes. Removes the last piece from a specified slot.
+    public void removePiece(int slot){
+        int lastPieceY = slots[slot].getFilled() - 1;
+        slots[slot].removePiece();
+        spaces[slot][lastPieceY].removePiece();
     }
 }

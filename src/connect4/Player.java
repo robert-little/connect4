@@ -10,8 +10,8 @@ package connect4;
  * @author Robbie
  */
 public class Player {
-    int playedPieces;
-    String name;
+    private int playedPieces;
+    private String name;
     
     public Player(String name){
         this.name = name;

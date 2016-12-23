@@ -10,16 +10,13 @@ package connect4;
  * @author Robbie
  */
 public class Space {
-    boolean full;
-    Piece p;
+    private Piece p;
     
-    public Space (boolean full) {
-        this.full = full;
+    public Space () {
         p = null;
     }
     
     public void setPiece (Piece p) {
-        this.full = true; 
         this.p = p;
     }
     
@@ -29,5 +26,10 @@ public class Space {
         } else {
             return p;
         }
+    }
+    
+    //This is for testing only
+    public void removePiece (){
+        p = null;
     }
 }
