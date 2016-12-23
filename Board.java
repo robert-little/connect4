@@ -8,6 +8,20 @@ package connect4;
 /**
  *
  * @author Robbie
+ * The board should be thought of like this:
+ *      _ _ _ _ _ _ _ _ _ _
+ * (>7)|                   |
+ *    7|                   |
+ *    6|                   |
+ *    5|                   |
+ *    4|                   |
+ *    3|                   |
+ *    2|                   |
+ *    1|                   |
+ *    0|_ _ _ _ _ _ _ _ _ _|
+ *      0 1 2 3 4 5 6 7 (>7)
+ * 
+ * With 0,0 being at the bottom left.
  */
 public class Board {
     int height; //y
@@ -56,9 +70,16 @@ public class Board {
                 if(checkDown(lastPieceX, lastPieceY, owner)){
                     return true;
                 }
-            } else if(checkHorizontal(lastPieceX, lastPieceY, owner)){
+            }
+            if(checkHorizontal(lastPieceX, lastPieceY, owner)){
+                return true;
+            } else if(checkLeftToRight(lastPieceX, lastPieceY, owner)){
+                return true;
+            } else if(checkRightToLeft(lastPieceX, lastPieceY, owner)){
                 return true;
             }
+            
+            
         }
         
         return false;
@@ -113,30 +134,76 @@ public class Board {
         return false;
     }
     
-//    //Checking this: \ diagonal
-//    private boolean checkUpLeft (int x, int y, int owner){
-//        int currentY = y-1;
-//        int count = 1;
-//        while(spaces[x][currentY].getPiece().getOwner() == owner){
-//            count++;
-//            if(count == 4){
-//                return true;
-//            }
-//            currentY--;
-//        }
-//        return false;
-//    }
-//    //Checking this: / diagonal
-//    private boolean checkUpRight (int x, int y, int owner){
-//        int currentY = y-1;
-//        int count = 1;
-//        while(spaces[x][currentY].getPiece().getOwner() == owner){
-//            count++;
-//            if(count == 4){
-//                return true;
-//            }
-//            currentY--;
-//        }
-//        return false;
-//    }
+    //Checking this: / diagonal
+    private boolean checkLeftToRight (int x, int y, Player owner){
+        int currentY = y+1;
+        int currentX = x+1;
+        int count = 1;
+        //First we go up
+        while(currentY <= 7 && currentX <= 7 && spaces[currentX][currentY].getPiece() != null){
+            if(spaces[currentX][currentY].getPiece().getOwner() == owner){
+                count++;
+                if(count == 4){
+                    return true;
+                }
+                currentY++;
+                currentX++;
+            } else {
+                break;
+            }
+        }
+        currentY = y-1;
+        currentX = x-1;
+        //We then go down
+        while(currentY >= 0 && currentX >= 0 &&spaces[currentX][currentY].getPiece() != null){
+            if(spaces[currentX][currentY].getPiece().getOwner() == owner){
+                count++;
+                if(count == 4){
+                    return true;
+                }
+                currentY--;
+                currentX--;
+            } else {
+                break;
+            }
+        }
+        
+        return false;
+    }
+    //Checking this: \ diagonal
+    private boolean checkRightToLeft (int x, int y, Player owner){
+        int currentY = y+1;
+        int currentX = x-1;
+        int count = 1;
+        //First we go up
+        while(currentY <= 7 && currentX >= 0 && spaces[currentX][currentY].getPiece() != null){
+            if(spaces[currentX][currentY].getPiece().getOwner() == owner){
+                count++;
+                if(count == 4){
+                    return true;
+                }
+                currentY++;
+                currentX--;
+            } else {
+                break;
+            }
+        }
+        currentY = y-1;
+        currentX = x+1;
+        //We then go down
+        while(currentY >= 0 && currentX <= 7 && spaces[currentX][currentY].getPiece() != null){
+            if(spaces[currentX][currentY].getPiece().getOwner() == owner){
+                count++;
+                if(count == 4){
+                    return true;
+                }
+                currentY--;
+                currentX++;
+            } else {
+                break;
+            }
+        }
+        
+        return false;
+    }
 }
